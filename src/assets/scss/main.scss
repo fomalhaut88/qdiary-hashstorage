@@ -1,0 +1,16 @@
+@import "@/assets/scss/base.scss";
+
+
+html, body {
+    overflow-y: hidden;
+}
+
+.empty-icon {
+    width: 20px; 
+    display: inline-block;
+}
+
+a.is-active {
+    color: $dark !important;
+    background-color: $light !important;
+}
