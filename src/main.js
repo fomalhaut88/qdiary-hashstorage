@@ -83,7 +83,13 @@ new Vue({
       else {
         // Clear if it is not valid
         profile.clear()
+
+        // Set profile to null
+        this.$hscm.profile = null
       }
+    } else {
+      // Set profile to null
+      this.$hscm.profile = null
     }
 
     // Prepare appstate
