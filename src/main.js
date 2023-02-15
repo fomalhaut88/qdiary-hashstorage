@@ -55,9 +55,9 @@ Vue.config.productionTip = false
 Vue.prototype.$hscm = {
   appId: APP_ID,
   root: process.env.VUE_APP_HASHSTORAGE_ROOT,
-  hsc: null,
-  api: null,
-  profile: null,
+  hsc: undefined,
+  api: undefined,
+  profile: undefined,
 }
 
 // AppState object

@@ -12,6 +12,6 @@ The website has minimalistic and friendly interface, it supports multiple diarie
 
 Step 1. Create a file `.env.production` with the defined Hashstorage root. For example: `VUE_APP_HASHSTORAGE_ROOT=https://hashstorage2.alexfomalhaut.com`
 
-Step 2. `docker build -t qdiary-app .`
+Step 2. `docker build -t qdiary .`
 
-Step 3. `docker run -it -p 8080:80 --rm --name qdiary-app-1 qdiary-app`
+Step 3. `docker run -it -p 8080:80 --restart=always --name=qdiary-app -d qdiary`

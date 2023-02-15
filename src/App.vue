@@ -99,17 +99,21 @@
       },
     },
     async mounted() {
-      setTimeout(() => {
-        if (this.$hscm.profile === null) {
-          this.$refs.refLoginModal.show()
-        } else {
-          const intervalId = setInterval(() => {
-            if (this.$appstate.isInitialized) {
-              clearInterval(intervalId)
-              this.load()
-              this.isReady = true
-            }
-          }, 100)
+      const profileIntervalId = setInterval(() => {
+        if (this.$hscm.profile !== undefined) {
+          clearInterval(profileIntervalId)
+
+          if (this.$hscm.profile === null) {
+            this.$refs.refLoginModal.show()
+          } else {
+            const loadIntervalId = setInterval(() => {
+              if (this.$appstate.isInitialized) {
+                clearInterval(loadIntervalId)
+                this.load()
+                this.isReady = true
+              }
+            }, 100)
+          }
         }
       }, 100)
 
