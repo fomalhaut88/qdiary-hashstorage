@@ -44,17 +44,16 @@ Vue.use(Buefy, {
     },
 })
 
+import config from './config'
 import AppState from './appstate'
 import App from './App.vue'
-
-const APP_ID = "a4a3185f-5a8d-4194-b4a2-a3432a13947c"
 
 Vue.config.productionTip = false
 
 // A manager to keep hashstorage-cli entities
 Vue.prototype.$hscm = {
-  appId: APP_ID,
-  root: process.env.VUE_APP_HASHSTORAGE_ROOT,
+  appId: config.APP_ID,
+  root: config.HASHSTORAGE_ROOT,
   hsc: undefined,
   api: undefined,
   profile: undefined,

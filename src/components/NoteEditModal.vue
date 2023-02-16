@@ -12,7 +12,7 @@
                         v-model="date"
                         indicators="bars"
                         size="is-small"
-                        :first-day-of-week="1"
+                        :first-day-of-week="0"
                         locale="en-US"
                         :events="getEvents()">
           </b-datepicker>
