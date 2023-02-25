@@ -18,8 +18,7 @@
           
           <template #end>
             <b-navbar-item href="#" @click="saveText()">
-              <vue-fontawesome icon="save" size="1x" fixed-width />
-              <span v-if="text != textOld">*</span>
+              <vue-fontawesome icon="save" size="1x" fixed-width v-if="text != textOld"/>
             </b-navbar-item>
             <b-navbar-item href="#" @click="$refs.refMenuSidebar.show()">
               <vue-fontawesome icon="ellipsis-v" size="1x" fixed-width />
