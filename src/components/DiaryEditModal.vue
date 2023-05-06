@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="isShown"
            has-modal-card
-           :can-cancel="false">
+           :can-cancel="true">
     <form action="">
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head">

@@ -78,6 +78,8 @@
           cancelText: 'Stay',
           type: 'is-danger',
           hasIcon: true,
+          iconPack: 'fas',
+          icon: 'info-circle',
           onConfirm: () => {
             this.$hscm.profile.clear()
             location.reload()

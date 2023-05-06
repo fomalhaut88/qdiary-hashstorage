@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid'
 import aes256 from 'aes256'
 
-import { getToday, sortByKey } from './utils'
+import { getToday, sortByKey, isWhiteSpace } from './utils'
 
 
 class DataGroup {
@@ -10,6 +10,7 @@ class DataGroup {
     this.group = group
     this.data = {}
     this.block = {}
+    this.invalidVersionIsDetected = false
   }
 
   async load(key, hsc, api, profile) {
@@ -52,11 +53,27 @@ class DataGroup {
   }
 
   async save(key, api, profile) {
+    if (this.invalidVersionIsDetected) {
+      this._sendInvalidVersionEvent()
+      throw "Invalid version detected"
+    }
+
     if (Object.keys(this.data[key]).length == 0) {
       this._setDefaultData(key)
     }
+
     this._setBlockFromData(key, profile)
-    await this.block[key].save(api, profile)
+
+    try {
+      await this.block[key].save(api, profile)
+    } catch (err) {
+      // If status 412 (invalid version) generate an event
+      if (err.status == 412) {
+        this.invalidVersionIsDetected = true
+        this._sendInvalidVersionEvent()
+      }
+      throw err
+    }
   }
 
   _setDefaultData(key) {
@@ -75,6 +92,12 @@ class DataGroup {
     const decrypted = JSON.stringify(this.data[key])
     const encrypted = aes256.encrypt(profile.privateKey(), decrypted)
     this.block[key].setData(encrypted)
+  }
+
+  _sendInvalidVersionEvent() {
+    const event = document.createEvent("Event")
+    event.initEvent('hs-invalid-version', true, true)
+    document.dispatchEvent(event)
   }
 }
 
@@ -282,12 +305,27 @@ export default class AppState {
     }
   }
 
-  async setActiveNote(noteId) {
-    this.optionsGroup.data["options"].activeNote = noteId
-    await Promise.all([
-      this.optionsGroup.save("options", this.api, this.profile),
-      this.textsGroup.load(noteId, this.hsc, this.api, this.profile),
-    ])
+  async setActiveNote(noteId, deleteNoteWithEmptyText) {
+    const oldNoteId = this.getActiveNoteId()
+
+    if (oldNoteId != noteId) {
+      this.optionsGroup.data["options"].activeNote = noteId
+
+      let promises = [
+        this.optionsGroup.save("options", this.api, this.profile),
+        this.textsGroup.load(noteId, this.hsc, this.api, this.profile),
+      ]
+
+      // Delete note if empty text inside
+      if (deleteNoteWithEmptyText) {
+        const oldText = this.textsGroup.data[oldNoteId].text
+        if (isWhiteSpace(oldText)) {
+          promises.push(this.deleteNote(oldNoteId))
+        }
+      }
+
+      await Promise.all(promises)
+    }
   }
 
   async saveNote(date, noteId) {
@@ -318,7 +356,7 @@ export default class AppState {
 
     if (noteId == this.getActiveNoteId()) {  
       const newActiveNoteId = this.getNotes()[0].id
-      await this.setActiveNote(newActiveNoteId)
+      await this.setActiveNote(newActiveNoteId, false)
     }    
   }
 

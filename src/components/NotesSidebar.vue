@@ -49,7 +49,7 @@
       async setActiveNote(noteId) {
         if (noteId != this.$appstate.getActiveNoteId()) {
           this.$root.$emit('loading', true)
-          await this.$appstate.setActiveNote(noteId)
+          await this.$appstate.setActiveNote(noteId, true)
           this.$root.$emit('loading', false)
           this.$root.$emit('reload')
           this.hide()

@@ -35,9 +35,14 @@ function getToday() {
   return dateToString(now)
 }
 
+function isWhiteSpace(str) {
+  return /^\s*$/g.test(str)
+}
+
 export {
   sortByKey,
   zeroPad,
   dateToString,
   getToday,
+  isWhiteSpace,
 }

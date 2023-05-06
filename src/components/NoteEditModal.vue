@@ -1,7 +1,7 @@
 <template>
   <b-modal v-model="isShown"
            has-modal-card
-           :can-cancel="false">
+           :can-cancel="true">
     <form action="">
       <div class="modal-card" style="width: auto">
         <header class="modal-card-head">
@@ -10,7 +10,10 @@
         <section class="modal-card-body">
           <b-datepicker inline
                         v-model="date"
-                        indicators="bars"
+                        indicators="dots"
+                        icon-pack="fas"
+                        icon-prev="arrow-left"
+                        icon-next="arrow-right"
                         size="is-small"
                         :first-day-of-week="0"
                         locale="en-US"
@@ -88,7 +91,7 @@
         const noteId = await this.$appstate.saveNote(date, this.noteId)
 
         if (this.isNew()) {
-          await this.$appstate.setActiveNote(noteId)
+          await this.$appstate.setActiveNote(noteId, true)
           this.$root.$emit('reload')
         }
 

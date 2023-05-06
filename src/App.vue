@@ -17,9 +17,8 @@
           </template>
           
           <template #end>
-            <b-navbar-item href="#" @click="saveText()">
+            <b-navbar-item href="#" @click="saveText()" v-if="text != textOld">
               <vue-fontawesome icon="save" size="1x" fixed-width />
-              <span v-if="text != textOld">*</span>
             </b-navbar-item>
             <b-navbar-item href="#" @click="$refs.refMenuSidebar.show()">
               <vue-fontawesome icon="ellipsis-v" size="1x" fixed-width />
@@ -41,7 +40,8 @@
       </div>
 
       <div>
-        <textarea class="main-text" spellcheck="false" v-model="text" @blur="saveText()" />
+        <textarea ref="refTextarea" class="main-text" spellcheck="false" 
+                  v-model="text" @input="textChanged()" @blur="saveText()" />
       </div>
 
       <b-loading :is-full-page="true" v-model="isLoading" />
@@ -59,6 +59,8 @@
   import NoteEditModal from '@/components/NoteEditModal'
   import AboutModal from '@/components/AboutModal'
 
+  const TEXTAREA_BOTTOM_OFFSET = 6
+
   export default {
     name: 'App',
     components: {
@@ -73,6 +75,7 @@
       return {
         isReady: false,
         isLoading: false,
+        isSaving: false,
         textOld: "",
         text: "",
         diary: null,
@@ -87,14 +90,59 @@
         this.text = this.textOld
       },
 
-      async saveText() {
-        if (this.textOld != this.text) {
-          await this.$appstate.saveActiveText(this.text)
-          this.$buefy.toast.open({
-            message: "Text has been saved",
-            type: "is-dark",
+      textChanged() {
+        // Get last characters
+        const idxFrom = (this.text.length > TEXTAREA_BOTTOM_OFFSET) ? 
+          (this.text.length - TEXTAREA_BOTTOM_OFFSET) : 0
+        const ending = this.text.substring(idxFrom).split("").reverse()
+
+        // Calculate the necessary extra new lines to add in the end
+        let extra = TEXTAREA_BOTTOM_OFFSET
+        for (const c of ending) {
+          if (c == '\n') {
+            extra -= 1
+          } else {
+            break
+          }
+        }
+
+        // If there are new lines to add
+        if (extra > 0) {
+          // Get current cursor position
+          const cursorPos = this.$refs.refTextarea.selectionStart
+
+          // Add new lines to the end
+          let tail = ''
+          for (let i = 0; i < extra; i++) {
+            tail += '\n'
+          }
+          this.text += tail
+
+          // Return cursor back to its old position
+          this.$nextTick(() => {
+            this.$refs.refTextarea.selectionStart = cursorPos
+            this.$refs.refTextarea.selectionEnd = cursorPos
           })
-          this.textOld = this.text
+        }
+      },
+
+      async saveText() {
+        if (!this.isSaving) {
+          if (this.textOld != this.text) {
+            this.isSaving = true
+
+            try {
+              await this.$appstate.saveActiveText(this.text)
+            } finally {
+              this.isSaving = false
+            }
+
+            this.$buefy.toast.open({
+              message: "Text has been saved",
+              type: "is-dark",
+            })
+            this.textOld = this.text
+          }
         }
       },
     },
@@ -128,6 +176,37 @@
       this.$root.$on('show-about-modal', () => {
         this.$refs.refAboutModal.show()
       })
+
+      window.onbeforeunload = () => {
+        return (this.textOld != this.text) ? 
+          "There are unsaved changes on the page." : null
+      }
+
+      document.addEventListener(
+        "hs-invalid-version",
+        () => {
+          this.isLoading = false
+
+          this.$buefy.dialog.alert({
+            title: 'Server error',
+            message: 'Data on the server was updated. ' + 
+                     'Reload the page to pull the changes.',
+            type: 'is-danger',
+            hasIcon: true,
+            icon: 'times-circle',
+            iconPack: 'fa',
+            ariaRole: 'alertdialog',
+            ariaModal: true,
+            confirmText: 'Reload',
+            cancelText: 'Cancel',
+            canCancel: true,
+            onConfirm: () => {
+              window.location.reload()
+            },
+          })
+        },
+        false
+      )
     },
   }
 </script>
