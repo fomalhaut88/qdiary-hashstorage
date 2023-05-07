@@ -9,19 +9,19 @@
         <b-menu-list label="Menu">
           <b-menu-item @click="$emit('new-diary-clicked')">
             <template #label>
-              <vue-fontawesome icon="plus" size="1x" fixed-width />
+              <b-icon icon="plus" size="is-small" />
               New diary
             </template>
           </b-menu-item>
           <b-menu-item @click="$root.$emit('show-about-modal')">
             <template #label>
-              <vue-fontawesome icon="info" size="1x" fixed-width />
+              <b-icon icon="information-variant" size="is-small" />
               About
             </template>
           </b-menu-item>
           <b-menu-item @click="logout()">
             <template #label>
-              <vue-fontawesome icon="sign-out" size="1x" fixed-width />
+              <b-icon icon="logout" size="is-small" />
               Logout
             </template>
           </b-menu-item>
@@ -31,8 +31,8 @@
           <b-menu-item v-for="item in $appstate.getDiaries()" :key="item.id" 
                        @click="setActiveDiary(item.id)">
             <template #label>
-              <vue-fontawesome icon="check" size="1x" fixed-width 
-                               v-if="item.id == $appstate.getActiveDiaryId()" />
+              <b-icon icon="check-bold" size="is-small" 
+                      v-if="item.id == $appstate.getActiveDiaryId()" />
               <span class="empty-icon" v-else></span>
               {{ item.name }}
             </template>
@@ -78,8 +78,6 @@
           cancelText: 'Stay',
           type: 'is-danger',
           hasIcon: true,
-          iconPack: 'fas',
-          icon: 'info-circle',
           onConfirm: () => {
             this.$hscm.profile.clear()
             location.reload()

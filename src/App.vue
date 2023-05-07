@@ -2,29 +2,27 @@
   <div id="app">
     <div v-if="isReady">
       <div>
-        <b-navbar type="is-primary has-background-primary-dark">
+        <b-navbar type="is-primary" class="has-background-primary-dark" fixed-top>
           <template #start>
             <b-navbar-item href="#" @click="$refs.refNotesSidebar.show()">
-              <vue-fontawesome icon="bars" size="1x" fixed-width />
+              <b-icon icon="menu" />
             </b-navbar-item>
             <b-navbar-item href="#" @click="$refs.refDiaryEditModal.show(diary.id)">
               <strong>{{ diary.name }}</strong>
             </b-navbar-item>
             <b-navbar-item href="#" @click="$refs.redNoteEditModal.show(note.id)">
-              <vue-fontawesome icon="calendar" size="1x" fixed-width />
+              <b-icon icon="calendar-range" size="is-small" />
+              &nbsp;
               <strong>{{ note.date }}</strong>
             </b-navbar-item>
           </template>
           
           <template #end>
             <b-navbar-item href="#" @click="saveText()" v-if="text != textOld">
-              <vue-fontawesome icon="save" size="1x" fixed-width />
+              <b-icon icon="content-save" />
             </b-navbar-item>
             <b-navbar-item href="#" @click="$refs.refMenuSidebar.show()">
-              <vue-fontawesome icon="ellipsis-v" size="1x" fixed-width />
-              <!-- <b-loading :is-full-page="false" v-model="isLoading">
-                <vue-fontawesome icon="sync-alt" size="1x" fixed-width spin />
-              </b-loading> -->
+              <b-icon icon="dots-vertical" />
             </b-navbar-item>
           </template>
         </b-navbar>
@@ -193,8 +191,6 @@
                      'Reload the page to pull the changes.',
             type: 'is-danger',
             hasIcon: true,
-            icon: 'times-circle',
-            iconPack: 'fa',
             ariaRole: 'alertdialog',
             ariaModal: true,
             confirmText: 'Reload',

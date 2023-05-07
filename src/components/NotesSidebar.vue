@@ -8,7 +8,7 @@
         <b-menu-list label="Actions">
           <b-menu-item class="sidebar-item-sep" @click="$emit('new-note-clicked')">
             <template #label>
-              <vue-fontawesome icon="plus" size="1x" fixed-width />
+              <b-icon icon="plus" size="is-small" />
               New Note
             </template>
           </b-menu-item>
@@ -18,8 +18,8 @@
           <b-menu-item v-for="item in $appstate.getNotes()" :key="item.id"
                        @click="setActiveNote(item.id)">
             <template #label>
-              <vue-fontawesome icon="check" size="1x" fixed-width 
-                               v-if="item.id == $appstate.getActiveNoteId()" />
+              <b-icon icon="check-bold" size="is-small" 
+                      v-if="item.id == $appstate.getActiveNoteId()" />
               <span class="empty-icon" v-else></span>
               {{ item.date }}
             </template>

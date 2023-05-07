@@ -11,9 +11,6 @@
           <b-datepicker inline
                         v-model="date"
                         indicators="dots"
-                        icon-pack="fas"
-                        icon-prev="arrow-left"
-                        icon-next="arrow-right"
                         size="is-small"
                         :first-day-of-week="0"
                         locale="en-US"

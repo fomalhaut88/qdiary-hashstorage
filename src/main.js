@@ -1,48 +1,10 @@
 import Vue from 'vue'
 import Buefy from 'buefy'
 
+import '@mdi/font/css/materialdesignicons.css'
 import '@/assets/scss/main.scss'
 
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fas } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-
-library.add(fas)
-Vue.component('vue-fontawesome', FontAwesomeIcon)
-
-Vue.use(Buefy, {
-  defaultIconComponent: 'vue-fontawesome',
-  defaultIconPack: 'fas',
-  customIconPacks: {
-        'fas': {
-            sizes: {
-                'is-xsmall': 'xs',
-                'is-small': 'sm',
-                'default': '',
-                'is-large': 'lg',
-                'is-xlarge': '2x'
-            }
-        },
-        'far': {
-            sizes: {
-                'is-xsmall': 'xs',
-                'is-small': 'sm',
-                'default': '',
-                'is-large': 'lg',
-                'is-xlarge': '2x'
-            }
-        },
-        'fab': {
-            sizes: {
-                'is-xsmall': 'xs',
-                'is-small': 'sm',
-                'default': '',
-                'is-large': 'lg',
-                'is-xlarge': '2x'
-            }
-        },
-    },
-})
+Vue.use(Buefy)
 
 import config from './config'
 import AppState from './appstate'
